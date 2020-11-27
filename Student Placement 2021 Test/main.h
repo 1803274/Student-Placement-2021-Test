@@ -26,11 +26,15 @@ using chrono::duration_cast;
 using chrono::milliseconds;
 typedef chrono::steady_clock the_clock;
 
+
+
+
 struct Node {
 	int x, y; //2D Coords of the Node.
 	bool bObstacle = false; 
 	bool bVisited = false;
 	bool bPath = false;
+	char cValue = '~';
 	float DistanceToEndGlobal;
 	float DistanceToEndLocal;
 	unordered_set<Node*> conections_neighbours;
@@ -43,22 +47,24 @@ struct compare {
 	}
 };
 
-
+struct GridSize {
+	int x = 0, y = 1; 
+};
 
 class main
 {
 private:
 
-	Node* nodes = nullptr;
-	Node* node_start = nullptr;
-	Node* node_end = nullptr;
 
 public:
+	//Print Intro
+	void PrintIntro();
+
 	//Draw Grid with Debugging purposes
 	void DrawGrid(int start_x, int start_y, int end_x, int end_y, int grid_length);
 
 	//2D Node Array Initialization
-	void InitArray(int grid_length);
+	//void InitArray(vector<char> &InputVector, GridSize &gridSize);
 
 	//Create Node Conection
 	void ConectNodes(int grid_length);
