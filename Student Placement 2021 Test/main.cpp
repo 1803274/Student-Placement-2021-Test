@@ -11,6 +11,8 @@ Node* nodes = nullptr;
 Node* node_start = nullptr;
 Node* node_end = nullptr;
 
+string OutputString = "";
+
 HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
 
 void main::PrintIntro()
@@ -27,10 +29,11 @@ void InitArray(vector<char>& InputVector, GridSize& gridSize)
 {
 	
 	nodes = new Node[gridSize.x * gridSize.y];
-	for (int x = 0; x < gridSize.x; x++) {
-		for (int y = 0; y < gridSize.y; y++) {
+	for (int y = 0; y < gridSize.y; y++) {
+		for (int x = 0; x < gridSize.x; x++) {
 			int assemble = y * gridSize.x + x;
 			cout << assemble << endl;
+			nodes[assemble].x = x;
 			nodes[assemble].y = y;
 			nodes[assemble].bObstacle = false;
 			nodes[assemble].parent = nullptr;
@@ -215,8 +218,25 @@ void A_Star_Algorithm(GridSize& gridSize) {
 
 	if (node_end) {
 		Node* p = node_end;
+		
 		while (p) {
 			p->bPath = true;
+			if (p->parent) {
+				if (p->parent->x < p->x) {
+					OutputString.insert(0,"E");
+				}
+				else if (p->parent->x > p->x) {
+					OutputString.insert(0, "W");
+				}
+				else if (p->parent->y < p->y) {
+					OutputString.insert(0, "S");
+				}
+				else if (p->parent->y > p->y) {
+					OutputString.insert(0, "N");
+				}
+			}
+
+
 			p = p->parent;
 		}
 	}
@@ -225,8 +245,8 @@ void A_Star_Algorithm(GridSize& gridSize) {
 }
 
 void DrawGrid(GridSize& gridSize) {
-	for (int x = 0; x < gridSize.x; x++) {
-		for (int y = 0; y < gridSize.y; y++)
+	for (int y = 0; y < gridSize.y; y++) {
+		for (int x = 0; x < gridSize.x; x++)
 		{
 			int assemble = y * gridSize.x + x;
 			if (nodes[assemble].bObstacle) {
@@ -309,7 +329,7 @@ int main() {
 		
 
 
-		cout << endl << "Input File have " << gridSize.x << " columns and " << gridSize.y << " Rows.\n";
+		cout << endl << "Input File have " << gridSize.x << " X elements and " << gridSize.y << " Y elements.\n";
 
 
 		bValidInput = true;
@@ -326,6 +346,7 @@ int main() {
 	
 	}
 
+	cout << endl << OutputString << endl << endl;
 
 	return 0;
 }
