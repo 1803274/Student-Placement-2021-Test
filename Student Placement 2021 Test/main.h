@@ -19,6 +19,8 @@ LinkedIn: https://www.linkedin.com/in/daniel-martinez-miguel-172219140/
 #include <unordered_set>
 #include <fstream>
 
+#define MAX_OPTIONS 5 
+
 using namespace std;
 using namespace std::this_thread;
 using namespace std::chrono;
@@ -57,29 +59,7 @@ private:
 
 
 public:
-	//Print Intro
-	void PrintIntro();
 
-	//Draw Grid with Debugging purposes
-	void DrawGrid(int start_x, int start_y, int end_x, int end_y, int grid_length);
-
-	//2D Node Array Initialization
-	//void InitArray(vector<char> &InputVector, GridSize &gridSize);
-
-	//Create Node Conection
-	void ConectNodes(int grid_length);
-
-	//Add Random Obstacles
-	void InsertObstacles(int start_x, int start_y, int end_x, int end_y, int randomizer, int grid_length);
-
-	//Initialize grid, conections and start and end point. 
-	void Initialization(int start_x, int start_y, int end_x, int end_y, int randomizer, int grid_length);
-
-	//Reset node states. 
-	void Reset_Nodes(int grid_length);
-
-	//Pathfinding Algorithm
-	void A_star(int start_x, int start_y, int end_x, int end_y, int grid_length);
 
 
 };
