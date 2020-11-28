@@ -15,15 +15,12 @@ string OutputString = "";
 
 HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
 
-void main::PrintIntro()
+void PrintIntro()
 {
 	cout << "Playground Games: Student Placement Test 2021\nName: Daniel Martinez Miguel\nEmail: danielmartinezdev@gmail.com";
 
 }
 
-void main::DrawGrid(int start_x, int start_y, int end_x, int end_y, int grid_length)
-{
-}
 
 void InitArray(vector<char>& InputVector, GridSize& gridSize)
 {
@@ -32,7 +29,7 @@ void InitArray(vector<char>& InputVector, GridSize& gridSize)
 	for (int y = 0; y < gridSize.y; y++) {
 		for (int x = 0; x < gridSize.x; x++) {
 			int assemble = y * gridSize.x + x;
-			cout << assemble << endl;
+			//cout << assemble << endl;
 			nodes[assemble].x = x;
 			nodes[assemble].y = y;
 			nodes[assemble].bObstacle = false;
@@ -50,39 +47,19 @@ void ConectNodes(GridSize& gridSize)
 	for (int x = 0; x < gridSize.x; x++) {
 		for (int y = 0; y < gridSize.y; y++) {
 			int assembler = y * gridSize.x + x;
-			cout << "Node: " << assembler << endl<< endl;
 			if (y > 0) {
-				cout << "Conected to: " << (y - 1) * gridSize.y + (x + 0) << endl;
 				nodes[assembler].conections_neighbours.insert(&nodes[(y - 1) * gridSize.x + (x + 0)]);
 			}
 			if (y < gridSize.y - 1) {
-				cout << "Conected to: " << (y + 1) * gridSize.x + (x + 0) << endl;
-
 				nodes[assembler].conections_neighbours.insert(&nodes[(y + 1) * gridSize.x + (x + 0)]);
 			}
 			if (y > 0) {
-				cout << "Conected to: " << (y + 0) * gridSize.x + (x - 1) << endl;
-
 				nodes[assembler].conections_neighbours.insert(&nodes[(y + 0) * gridSize.x + (x - 1)]);
 			}
 			if (x < gridSize.x - 1) {
-				cout << "Conected to: " << (y + 0) * gridSize.x + (x + 1) << endl;
-
 				nodes[assembler].conections_neighbours.insert(&nodes[(y + 0) * gridSize.x + (x + 1)]);
 			}
-	//		if (x < gridSize.x - 1 && y < gridSize.y - 1) {
-	//			nodes[assembler].conections_neighbours.insert(&nodes[(y + 1) * gridSize.x + (x + 1)]);
-	//		}
-	//		if (x > 0 && y > 0) {
-	//			nodes[assembler].conections_neighbours.insert(&nodes[(y - 1) * gridSize.x + (x - 1)]);
-	//		}
-	//		if (x > 0 && y < gridSize.y - 1) {
-	//			nodes[assembler].conections_neighbours.insert(&nodes[(y + 1) * gridSize.x + (x - 1)]);
-	//		}
-	//		if (x < gridSize.x - 1 && y > 0) {
-	//			nodes[assembler].conections_neighbours.insert(&nodes[(y - 1) * gridSize.x + (x + 1)]);
-	//		}
-		}
+}
 	}
 }
 
@@ -138,8 +115,6 @@ bool ReadInputFile(vector<char>& InputVector, GridSize& gridSize) {
 			break;
 		}
 	}
-
-
 	
 	if (!node_start || !node_end) {
 		cout << "Missing Start Point or End Point\n";
@@ -236,7 +211,6 @@ void A_Star_Algorithm(GridSize& gridSize) {
 				}
 			}
 
-
 			p = p->parent;
 		}
 	}
@@ -277,63 +251,93 @@ void DrawGrid(GridSize& gridSize) {
 	}
 }
 
+void RestartProgram() {
+	StartPoint.x = NULL;
+	StartPoint.y = NULL;
+	EndPoint.x = NULL;
+	EndPoint.y = NULL;
+	nodes = nullptr;
+	node_start = nullptr;
+	node_end = nullptr;
+	
+}
+
 int main() {
 
 	//Intro
 	cout << "Playground Games: Student Placement Test 2021\nName: Daniel Martinez Miguel\nEmail: danielmartinezdev@gmail.com";
 
-	string sOption = "quickest_route_4.txt";
-
+	string sOption = "default value";
 	string InputInfo;
 	GridSize gridSize;
 	bool bValidInput = false;
 	ifstream inFile;
 	vector<char> charVector;
-
-
+	bool bMenuValid = false;
+	bool bExitProgram = false; 
 	do
 	{
-		//sOption = "";
-		cout << "Write the desired maze to load. <Example: quickest_route_1.txt>\n";
-		//cin >> sOption;
+	do
+	{
+		int menu = 0;
+		do
+		{
+			cout << "Map selection menu: \n0- Introduce new filename.\n1- Select map <Quicktest Route 1>\n2- Select map <Quicktest Route 2>\n3- Select map <Quicktest Route 3>\n4- Select map <Quicktest Route 4>\n5- Exit. \nSelect one of the options: ";
+			cin >> menu;
+			bMenuValid = true;
+			switch (menu)
+			{
+			case 0:
+				cout << "Write the desired maze to load. <Example: quickest_route_1.txt>\n";
+				cin >> sOption;
+				break;
+			case 1:
+				sOption = "quickest_route_1.txt";
+				break;
+			case 2:
+				sOption = "quickest_route_2.txt";
+				break;
+			case 3:
+				sOption = "quickest_route_3.txt";
+				break;
+			case 4:
+				sOption = "quickest_route_4.txt";
+				break;
+			case 5:
+				return 0;
+				break;
+			default:
+				bMenuValid = false;
+				break;
+			}
+			if (bMenuValid) {
+				inFile.open(sOption);
+				if (inFile) {
+					bValidInput = true;
+					bool bCountColumnsComplete = false;
 
-		cout << sOption << endl;
+					cout << "File loaded successfully\n";
+					char inputValues;
+					while (!inFile.eof()) {
+						inFile.get(inputValues);
+						charVector.push_back(inputValues);
 
-		inFile.open(sOption);
-		
-
-		bool bCountColumnsComplete = false;
-		if (inFile) {
-			cout << "LOADED SUCCESSFULLY\n";
-			char a;
-			while (!inFile.eof()) {
-				inFile.get(a);
-				cout << a;
-				charVector.push_back(a);
-				
-				if(!bCountColumnsComplete && a != '\n'){
-					gridSize.x++;
+						if (!bCountColumnsComplete && inputValues != '\n') {
+							gridSize.x++;
+						}
+						if (inputValues == '\n') {
+							bCountColumnsComplete = true;
+							gridSize.y++;
+							
+						}
+					}
 				}
-				if (a == '\n') {
-					bCountColumnsComplete = true;
-					gridSize.y++;
-					cout << endl;
+				else {
+					cout << "Error 404: Filename not found.\n";
+					bMenuValid = false;
 				}
 			}
-
-		}
-		else {
-			cout << "ERROR LOADED\n";
-		}
-
-		
-
-
-		cout << endl << "Input File have " << gridSize.x << " X elements and " << gridSize.y << " Y elements.\n";
-
-
-		bValidInput = true;
-
+		} while (!bMenuValid);
 	} while (!bValidInput);
 
 	inFile.close();
@@ -343,10 +347,17 @@ int main() {
 	if (ReadInputFile(charVector, gridSize)) { //If the Input file have Start and End Point.
 		A_Star_Algorithm(gridSize);
 		DrawGrid(gridSize);
-	
 	}
-
-	cout << endl << OutputString << endl << endl;
+	else {
+		cout << "Start or End Point not detected\n";
+	}
+	cout << endl << "Maze Solution: " <<OutputString << endl << endl;
+	RestartProgram();
+	charVector.clear();
+	gridSize.x = 0;
+	gridSize.y = 1;
+	OutputString = "";
+	} while (!bExitProgram);
 
 	return 0;
 }
