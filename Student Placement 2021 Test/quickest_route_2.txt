@@ -1,4 +1,4 @@
-xxxxxx
-x....B
-A.x..x
-xxxxxx
+xxxxx
+x...B
+A...x
+xxxxx

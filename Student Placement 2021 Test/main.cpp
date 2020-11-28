@@ -49,15 +49,23 @@ void ConectNodes(GridSize& gridSize)
 			int assembler = y * gridSize.x + x;
 			if (y > 0) {
 				nodes[assembler].conections_neighbours.insert(&nodes[(y - 1) * gridSize.x + (x + 0)]);
+				//cout << "Node: " << nodes[assembler].x << "," << nodes[assembler].y << 
+				//	" is neighbour of node " << nodes[(y - 1) * gridSize.x + (x + 0)].x << "," << nodes[(y - 1) * gridSize.x + (x + 0)].y << endl;
 			}
 			if (y < gridSize.y - 1) {
 				nodes[assembler].conections_neighbours.insert(&nodes[(y + 1) * gridSize.x + (x + 0)]);
+				//cout << "Node: " << nodes[assembler].x << "," << nodes[assembler].y <<
+				//	" is neighbour of node " << nodes[(y + 1) * gridSize.x + (x + 0)].x << "," << nodes[(y + 1) * gridSize.x + (x + 0)].y << endl;
 			}
-			if (y > 0) {
+			if (x > 0) {
 				nodes[assembler].conections_neighbours.insert(&nodes[(y + 0) * gridSize.x + (x - 1)]);
+				//cout << "Node: " << nodes[assembler].x << "," << nodes[assembler].y <<
+				//	" is neighbour of node " << nodes[(y + 0) * gridSize.x + (x - 1)].x << "," << nodes[(y + 0) * gridSize.x + (x - 1)].y << endl;
 			}
 			if (x < gridSize.x - 1) {
 				nodes[assembler].conections_neighbours.insert(&nodes[(y + 0) * gridSize.x + (x + 1)]);
+				//cout << "Node: " << nodes[assembler].x << "," << nodes[assembler].y <<
+				//	" is neighbour of node " << nodes[(y + 0) * gridSize.x + (x + 1)].x << "," << nodes[(y + 0) * gridSize.x + (x + 1)].y << endl;
 			}
 }
 	}
@@ -210,12 +218,12 @@ void A_Star_Algorithm(GridSize& gridSize) {
 					OutputString.insert(0, "N");
 				}
 			}
-
 			p = p->parent;
 		}
+		if (OutputString == "") {
+			OutputString = "There is no escape from this maze. :(\n";
+		}
 	}
-
-
 }
 
 void DrawGrid(GridSize& gridSize) {
@@ -262,10 +270,15 @@ void RestartProgram() {
 	
 }
 
+void Intro() {
+	cout << "Playground Games: Student Placement Test 2021\nName: Daniel Martinez Miguel\nEmail: danielmartinezdev@gmail.com" << endl << endl;
+
+}
+
 int main() {
 
 	//Intro
-	cout << "Playground Games: Student Placement Test 2021\nName: Daniel Martinez Miguel\nEmail: danielmartinezdev@gmail.com";
+	Intro();
 
 	string sOption = "default value";
 	string InputInfo;
@@ -331,6 +344,7 @@ int main() {
 							
 						}
 					}
+					inFile.close();
 				}
 				else {
 					cout << "Error 404: Filename not found.\n";
@@ -339,9 +353,9 @@ int main() {
 			}
 		} while (!bMenuValid);
 	} while (!bValidInput);
-
-	inFile.close();
-
+	Intro();
+	system("cls");
+	cout << "Map Name: " << sOption << endl << endl;
 	InitArray(charVector, gridSize);
 	ConectNodes(gridSize);
 	if (ReadInputFile(charVector, gridSize)) { //If the Input file have Start and End Point.
@@ -351,6 +365,9 @@ int main() {
 	else {
 		cout << "Start or End Point not detected\n";
 	}
+
+
+
 	cout << endl << "Maze Solution: " <<OutputString << endl << endl;
 	RestartProgram();
 	charVector.clear();
