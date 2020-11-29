@@ -61,18 +61,23 @@ void Application::InitArray()
 
 void Application::ConnectNodes()
 {
+	//Assign neighbours nodes in....
 	for (int x = 0; x < gridSize.x; x++) {
 		for (int y = 0; y < gridSize.y; y++) {
 			int index = y * gridSize.x + x;
+			//North
 			if (y > 0) {
 				nodes[index].conections_neighbours.insert(&nodes[(y - 1) * gridSize.x + (x + 0)]);
 			}
+			//South
 			if (y < gridSize.y - 1) {
 				nodes[index].conections_neighbours.insert(&nodes[(y + 1) * gridSize.x + (x + 0)]);
 			}
+			//West
 			if (x > 0) {
 				nodes[index].conections_neighbours.insert(&nodes[(y + 0) * gridSize.x + (x - 1)]);
 			}
+			//East
 			if (x < gridSize.x - 1) {
 				nodes[index].conections_neighbours.insert(&nodes[(y + 0) * gridSize.x + (x + 1)]);
 			}
@@ -86,37 +91,42 @@ bool Application::ReadInputFile()
 	int y = 0;
 	bool bEndNode = false;
 	bool bStartNode = false;
-
+	//Translate the information in the input file to the node array in case it is a...
 	for (auto c : charVector) {
 		c = toupper(c);
 		switch (c)
 		{
+			//Obstacle
 		case 'X':
 			nodes[y * gridSize.x + x].bObstacle = true;
 			x++;
 			break;
+			//Start Point
 		case 'A':
 			nodeStart = &nodes[y * gridSize.x + x];
 			StartPoint.x = x;
 			StartPoint.y = y;
 			x++;
 			break;
+			//End Point
 		case 'B':
 			nodeEnd = &nodes[y * gridSize.x + x];
 			EndPoint.x = x;
 			EndPoint.y = y;
 			x++;
 			break;
+			//End of line
 		case '\n':
 			y++;
 			x = 0;
 			break;
+			//Free space
 		default:
 			x++;
 			break;
 		}
 	}
-
+	//It also return true or false if one of the starting and ending point is missing. 
 	if (!nodeStart || !nodeEnd) {
 		if (!nodeStart) {
 			cout << "Missing Start Point\n";
@@ -197,12 +207,13 @@ void Application::A_Star_Algorithm()
 		}
 	}
 
+	//We follow the path created by the parented nodes backward (from end point to start point, to find the choosen way)
 	if (nodeEnd) {
 		Node* p = nodeEnd;
-
 		while (p) {
 			p->bPath = true;
 			if (p->parent) {
+				//As we build the output string
 				if (p->parent->x < p->x) {
 					sOutput.insert(0, "E");
 				}
@@ -218,6 +229,7 @@ void Application::A_Star_Algorithm()
 			}
 			p = p->parent;
 		}
+		//If we make all this process and the string is empty, it means that there is no way out the maze
 		if (sOutput == "") {
 			sOutput = "There is no escape from this maze. :(\n";
 		}
@@ -226,32 +238,34 @@ void Application::A_Star_Algorithm()
 
 void Application::DrawGrid()
 {
-
 	for (int y = 0; y < gridSize.y; y++) {
 		for (int x = 0; x < gridSize.x; x++)
 		{
-			int assemble = y * gridSize.x + x;
-			if (nodes[assemble].bObstacle) {
-
+			int index = y * gridSize.x + x;
+			//Output X if there is an obstacle...
+			if (nodes[index].bObstacle) {
 				cout << "X ";
-
 			}
+			//Output A if it is the start point
 			else if (x == StartPoint.x && y == StartPoint.y) {
 				SetConsoleTextAttribute(h, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
 				cout << "A ";
 				SetConsoleTextAttribute(h, FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
 			}
+			//Output B if it is the end point
 			else if (x == EndPoint.x && y == EndPoint.y) {
 				SetConsoleTextAttribute(h, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
 				cout << "B ";
 				SetConsoleTextAttribute(h, FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
 			}
-			else if (nodes[assemble].bPath) {
+			//Output the - if there is the path
+			else if (nodes[index].bPath) {
 				SetConsoleTextAttribute(h, FOREGROUND_RED | FOREGROUND_INTENSITY);
 				cout << "- ";
 				SetConsoleTextAttribute(h, FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
 			}
 			else {
+				//Output a point ig there is nothing special
 				cout << ". ";
 			}
 		}
@@ -259,17 +273,27 @@ void Application::DrawGrid()
 	}
 }
 
+void Application::PrintMenu()
+{
+	cout << "Map selection menu: \n0- Introduce new filename.\n1- Select map <Quicktest Route 1>\n2- Select map <Quicktest Route 2>"<< endl
+		<<"3- Select map <Quicktest Route 3>\n4- Select map <Quicktest Route 4>\n5- Exit. \nSelect one of the options: ";
+}
+
 void Application::runApp()
 {
+	//Print the introduction at the start of the program 
 	PrintIntro();
-	do
+
+	do //Application loop, when it ends the program quit. 
 	{
-		do
-		{
+		do //Repeat this loop a valid output is introduced 
+		{ 
 			int menu = 0;
-			cout << "Map selection menu: \n0- Introduce new filename.\n1- Select map <Quicktest Route 1>\n2- Select map <Quicktest Route 2>\n3- Select map <Quicktest Route 3>\n4- Select map <Quicktest Route 4>\n5- Exit. \nSelect one of the options: ";
+			PrintMenu();
 			cin >> menu;
 			bValidInput = true;
+
+			//This switch change the string for the input file name
 			switch (menu)
 			{
 			case 0:
@@ -295,8 +319,8 @@ void Application::runApp()
 				bValidInput = false;
 				break;
 			}
-			if (bValidInput)
-			{
+			if (bValidInput) 
+			{ //If the input is valid, we fill the input vector and size the input 
 				inFile.open(sOption);
 				if (inFile) {
 					bValidInput = true;
@@ -319,14 +343,16 @@ void Application::runApp()
 					inFile.close();
 				}
 				else
-				{
-					cout << "Error 404: Filename not found.\n";
+				{ //if the input is not valid it displays a error message. 
+					system("cls");
+					cout << "\nError 404: Filename not found.\n\n";
 					bValidInput = false;
 				}
 			} 
 		} while (!bValidInput);
 
 		system("cls");
+		//If everything is in order, it execute the program function by function. 
 		PrintIntro();
 		cout << "Map Name: " << sOption << endl << endl;
 		InitArray();
@@ -335,7 +361,9 @@ void Application::runApp()
 			A_Star_Algorithm();
 			DrawGrid();
 		}
+
 		cout << endl << "Maze Solution: " << sOutput << endl << endl;
 		RestartApplication();
+
 	} while (!bExitProgram);
 }

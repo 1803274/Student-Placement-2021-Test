@@ -82,6 +82,8 @@ private:
 	void A_Star_Algorithm();
 	//Output the grid to the console with colours to show the taken path. 
 	void DrawGrid();
+	//Print Options menu
+	void PrintMenu();
 
 protected:
 	//Start and end Point of the maze.
