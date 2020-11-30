@@ -40,7 +40,7 @@ void Application::PrintIntro()
 {
 	cout << "Playground Games: Student Placement Test 2021"<< endl <<
 		"Name: Daniel Martinez Miguel" << endl << 
-		"Email: danielmartinezdev@gmail.com" << endl;
+		"Email: danielmartinezdev@gmail.com" << endl << endl;
 }
 
 void Application::InitArray()
@@ -163,6 +163,7 @@ void Application::A_Star_Algorithm()
 
 	//Heuristics
 	auto distance = [](Node* a, Node* b) {
+		//Euclidean distance formula
 		return sqrtf((a->x - b->x) * (a->x - b->x) + (a->y - b->y) * (a->y - b->y));
 	};
 
@@ -176,33 +177,33 @@ void Application::A_Star_Algorithm()
 	nodeStart->DistanceToEndGlobal = heuristic(nodeStart, nodeEnd);
 
 	//Create untested node list and add the start node
-	priority_queue<Node*, vector<Node*>, compare> untested_nodes_list;
-	untested_nodes_list.push(nodeStart);
+	priority_queue<Node*, vector<Node*>, compare> untestedNodeList;
+	untestedNodeList.push(nodeStart);
 
-	while (!untested_nodes_list.empty() && currentNode != nodeEnd) {
-		while (!untested_nodes_list.empty() && untested_nodes_list.top()->bVisited)
+	while (!untestedNodeList.empty() && currentNode != nodeEnd) {
+		while (!untestedNodeList.empty() && untestedNodeList.top()->bVisited)
 		{
-			untested_nodes_list.pop();
+			untestedNodeList.pop();
 		}
-		if (untested_nodes_list.empty()) {
+		if (untestedNodeList.empty()) {
 			break;
 		}
 		//Explore Node Once
-		currentNode = untested_nodes_list.top();
+		currentNode = untestedNodeList.top();
 		currentNode->bVisited = true;
 		//Check all the neighbours of the current node
-		for (auto node_neighbour : currentNode->conections_neighbours) {
+		for (auto nodeNeighbour : currentNode->conections_neighbours) {
 			//Add Neighbours if they are not obstacles and they were not visited. 
-			if (!node_neighbour->bVisited && !node_neighbour->bObstacle) {
-				untested_nodes_list.push(node_neighbour);
+			if (!nodeNeighbour->bVisited && !nodeNeighbour->bObstacle) {
+				untestedNodeList.push(nodeNeighbour);
 			}
 			//Calculate possible better routes
-			float relax = currentNode->DistanceToEndLocal + distance(currentNode, node_neighbour);
+			float relax = currentNode->DistanceToEndLocal + distance(currentNode, nodeNeighbour);
 			//If the new path is better than the actual we get the new one.
-			if (relax < node_neighbour->DistanceToEndLocal) {
-				node_neighbour->parent = currentNode;
-				node_neighbour->DistanceToEndLocal = relax;
-				node_neighbour->DistanceToEndGlobal = node_neighbour->DistanceToEndLocal + heuristic(node_neighbour, nodeEnd);
+			if (relax < nodeNeighbour->DistanceToEndLocal) {
+				nodeNeighbour->parent = currentNode;
+				nodeNeighbour->DistanceToEndLocal = relax;
+				nodeNeighbour->DistanceToEndGlobal = nodeNeighbour->DistanceToEndLocal + heuristic(nodeNeighbour, nodeEnd);
 			}
 		}
 	}
@@ -299,18 +300,19 @@ void Application::runApp()
 			case 0:
 				cout << "Write the desired maze to load. <Example: quickest_route_1.txt>\n";
 				cin >> sOption;
+				sOption.insert(0, "mazes/");
 				break;
 			case 1:
-				sOption = "quickest_route_1.txt";
+				sOption = "mazes/quickest_route_1.txt";
 				break;
 			case 2:
-				sOption = "quickest_route_2.txt";
+				sOption = "mazes/quickest_route_2.txt";
 				break;
 			case 3:
-				sOption = "quickest_route_3.txt";
+				sOption = "mazes/quickest_route_3.txt";
 				break;
 			case 4:
-				sOption = "quickest_route_4.txt";
+				sOption = "mazes/quickest_route_4.txt";
 				break;
 			case 5:
 				return;
